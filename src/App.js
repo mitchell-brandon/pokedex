@@ -1,25 +1,34 @@
-import logo from './logo.svg';
-import './App.css';
+import {React, useEffect, useState} from "react";
+import PokeTable from "./components/pokemonTable/PokeTable.js";
+import SearchInput from "./components/searchInput/SearchIpnut.js"
 
 function App() {
+// STATE
+  const [pokemonData, setPokemonData] = useState([])
+  const [searchQuery, setSearchQuery] = useState("")
+
+  /// FUNCTIONS
+  function fetchKantoPokemon(){
+    fetch('https://pokeapi.co/api/v2/pokemon?limit=151')
+      .then(response => response.json())
+      .then(data =>{
+        setPokemonData(data.results)
+      })
+  }
+  useEffect(fetchKantoPokemon,[])
+  
+  function onQueryChange(ev) {
+    setSearchQuery(ev.target.value);
+    console.log(searchQuery)
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+   <div className ="App">
+     <SearchInput searchQuery={searchQuery} onQueryChange={onQueryChange}/>
+      <PokeTable pokemonData={pokemonData} searchQuery={searchQuery}/>
+   </div>
   );
+  
 }
 
 export default App;
